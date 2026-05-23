@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 public class ConfigLoader {
 
     private static ConfigLoader c;
-    private ConfigLoader(){};
+    private ConfigLoader(){}
 
     private static final Logger log = LoggerFactory.getLogger(ConfigLoader.class);
 
@@ -92,8 +91,8 @@ public class ConfigLoader {
 
     private Map<String,Object> loadFromFileSystem(){
         // check if .yml file exists in file system
-        Path path = Paths.get("/etc/ssh-protector/config.yml");
-//        Path path = Paths.get("D:\\ssh-prot-fileTest/config.yml");
+//        Path path = Paths.get("/etc/ssh-protector/config.yml");
+        Path path = Paths.get("D:\\ssh-prot-fileTest/config.yml");
         if(!Files.exists(path)){
             return null;
         }
@@ -140,6 +139,9 @@ public class ConfigLoader {
                             if (value instanceof String) {
                                 setter.invoke(config,Integer.parseInt((String) value));
                             }
+                        }else if(paramterType[0] == String.class){
+                            Object value = map.get(f.getName().toLowerCase());
+                            setter.invoke(config,(String)value);
                         }
                     }
                 }catch(NoSuchMethodException n){

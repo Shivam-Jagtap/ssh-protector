@@ -2,7 +2,10 @@ package com.shivam;
 
 
 import com.shivam.config.DefaultConfig;
+import com.shivam.enums.FileTypeEnum;
 import com.shivam.helper.ConfigLoader;
+import com.shivam.logging.LogFileDetector;
+import com.shivam.logging.LogWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,5 +32,17 @@ public class App
         // set the config , highest priority to arguments then config file in system and then default config
         ConfigLoader.getConfigLoader().validateAndApplyConfigurations(args,config);
         log.info("The set config by the system is {} ",config);
+
+        if(config.getFileType() == FileTypeEnum.FILE  && (config.getLogFilePath() == null || config.getLogFilePath().isEmpty())){
+            log.info("Searching for log file in the system");
+            LogFileDetector.detectLogFile(config);
+            log.info("The set logfile is : {}",config.getLogFilePath());
+        }
+        System.out.println(config);
+
+        log.info("===========Starting log watcher===============");
+        LogWatcher logWatcher = new LogWatcher(config);
+        logWatcher.watch();
+        log.info("===========Exiting log watching===============");
     }
 }

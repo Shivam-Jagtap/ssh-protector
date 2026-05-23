@@ -1,9 +1,14 @@
 package com.shivam.config;
 
+import com.shivam.enums.FileTypeEnum;
+
 public class DefaultConfig {
     private int maxFailedAttempts;
     private int timeWindowSeconds;
     private int banDurationMinuites;
+    private String logFilePath;
+//    private Boolean isJournalD;
+    private FileTypeEnum fileType  = FileTypeEnum.FILE;
 
     public DefaultConfig() {
     }
@@ -43,12 +48,29 @@ public class DefaultConfig {
         this.banDurationMinuites = banDurationMinuites;
     }
 
+    public String getLogFilePath() {
+        return logFilePath;
+    }
+
+    public void setLogFilePath(String logFilePath) {
+        this.logFilePath = logFilePath;
+    }
+
+    public FileTypeEnum getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(FileTypeEnum fileTypeEnum) {
+        this.fileType = fileTypeEnum;
+    }
+
     @Override
     public String toString() {
         return "DefaultConfig{" +
                 "maxFailedAttempts=" + maxFailedAttempts +
                 ", timeWindowSeconds=" + timeWindowSeconds +
                 ", banDurationMinuites=" + banDurationMinuites +
+                ", logFilePath='" + logFilePath + '\'' +
                 '}';
     }
 }
