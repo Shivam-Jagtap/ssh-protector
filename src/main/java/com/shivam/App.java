@@ -1,10 +1,15 @@
 package com.shivam;
 
 
+import com.shivam.ban.BanManager;
+import com.shivam.ban.IpTableBanExecutor;
+import com.shivam.ban.SlidingWindowDetectionStrategy;
 import com.shivam.config.DefaultConfig;
 import com.shivam.enums.FileTypeEnum;
 import com.shivam.helper.ConfigLoader;
 import com.shivam.logging.LogFileDetector;
+import com.shivam.logging.LogListener;
+import com.shivam.logging.LogProcessor;
 import com.shivam.logging.LogWatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +33,7 @@ public class App
         log.info("Starting the SSH-PROTECTOR app");
         log.info("=========================================");
 
-        DefaultConfig config = new DefaultConfig();
+        DefaultConfig config = DefaultConfig.getDefaultConfig();
         // set the config , highest priority to arguments then config file in system and then default config
         ConfigLoader.getConfigLoader().validateAndApplyConfigurations(args,config);
         log.info("The set config by the system is {} ",config);
@@ -41,7 +46,12 @@ public class App
         System.out.println(config);
 
         log.info("===========Starting log watcher===============");
+        // create BanManager with type of banExecutor and type of banStrategy that you need and inject into logListener
+        BanManager banManager = new BanManager(new IpTableBanExecutor(),new SlidingWindowDetectionStrategy());
+        LogListener logListener = new LogProcessor(banManager);
+
         LogWatcher logWatcher = new LogWatcher(config);
+        logWatcher.addListener(logListener); // registering the logListener to logWatcher
         logWatcher.watch();
         log.info("===========Exiting log watching===============");
     }

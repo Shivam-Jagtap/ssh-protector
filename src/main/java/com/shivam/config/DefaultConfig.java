@@ -2,21 +2,29 @@ package com.shivam.config;
 
 import com.shivam.enums.FileTypeEnum;
 
+// This is a singelton POJO for configuration
 public class DefaultConfig {
     private int maxFailedAttempts;
-    private int timeWindowSeconds;
+    private long timeWindowSeconds;
     private int banDurationMinuites;
     private String logFilePath;
 //    private Boolean isJournalD;
     private FileTypeEnum fileType  = FileTypeEnum.FILE;
 
-    public DefaultConfig() {
-    }
+    static DefaultConfig defaultConfig;
 
-    public DefaultConfig(int maxFailedAttempts, int timeWindowSeconds, int banDurationMinuites) {
-        this.maxFailedAttempts = maxFailedAttempts;
-        this.timeWindowSeconds = timeWindowSeconds;
-        this.banDurationMinuites = banDurationMinuites;
+    private DefaultConfig() {}
+
+    public static DefaultConfig getDefaultConfig() {
+        if(defaultConfig != null) return defaultConfig;
+        else{
+            synchronized (DefaultConfig.class){
+                if(defaultConfig == null){
+                    defaultConfig = new DefaultConfig();
+                }
+                return defaultConfig;
+            }
+        }
     }
 
     // this function will check if mandatory fields are set or not
@@ -32,11 +40,11 @@ public class DefaultConfig {
         this.maxFailedAttempts = maxFailedAttempts;
     }
 
-    public int getTimeWindowSeconds() {
+    public long getTimeWindowSeconds() {
         return timeWindowSeconds;
     }
 
-    public void setTimeWindowSeconds(int timeWindowSeconds) {
+    public void setTimeWindowSeconds(long timeWindowSeconds) {
         this.timeWindowSeconds = timeWindowSeconds;
     }
 
